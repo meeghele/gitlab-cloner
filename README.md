@@ -1,5 +1,9 @@
 # GitLab Cloner
 
+<div align="center">
+  <img src="images/gitlab-cloner_512.jpg" alt="GitLab Cloner Logo" width="200"/>
+</div>
+
 [![CI](https://github.com/meeghele/gitlab-cloner/actions/workflows/ci.yml/badge.svg)](https://github.com/meeghele/gitlab-cloner/actions)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://python.org)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
