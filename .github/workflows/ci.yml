@@ -1,4 +1,4 @@
-name: GitLab Cloner CI
+name: gitlab-cloner-ci
 
 on:
   push:
