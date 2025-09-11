@@ -6,11 +6,11 @@
 
 # GitLab Cloner
 
+A Python command-line tool that automates the process of cloning or fetching all repositories from a GitLab namespace, including subgroups and their projects.
+
 <div align="center">
   <img src="images/gitlab-cloner_512.jpg" alt="GitLab Cloner Logo" width="200"/>
 </div>
-
-A Python command-line tool that automates the process of cloning or fetching all repositories from a GitLab namespace, including subgroups and their projects.
 
 ## Features
 
