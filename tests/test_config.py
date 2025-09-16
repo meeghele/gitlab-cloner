@@ -35,7 +35,8 @@ class TestConfig:
             path='/test/path',
             disable_root=False,
             dry_run=False,
-            exclude='repo1'
+            exclude='repo1',
+            clone_method=gc.CloneMethod.SSH
         )
         
         assert config.url == 'https://gitlab.com'
@@ -45,9 +46,10 @@ class TestConfig:
         assert config.disable_root is False
         assert config.dry_run is False
         assert config.exclude == 'repo1'
+        assert config.clone_method == gc.CloneMethod.SSH
     
     def test_config_defaults(self):
-        """Test Config with None exclude."""
+        """Test Config with defaults."""
         config = gc.Config(
             url='https://gitlab.com',
             token='test-token',
@@ -57,10 +59,11 @@ class TestConfig:
             dry_run=False,
             exclude=None
         )
-        
+
         assert config.exclude is None
         assert config.disable_root is False
         assert config.dry_run is False
+        assert config.clone_method == gc.CloneMethod.HTTPS  # default value
 
 
 class TestArgumentParsing:
@@ -84,6 +87,7 @@ class TestArgumentParsing:
         assert config.exclude is None
         assert config.dry_run is False
         assert config.disable_root is False
+        assert config.clone_method == gc.CloneMethod.HTTPS  # default
     
     def test_parse_args_all_options(self):
         """Test parsing all available arguments."""
@@ -94,7 +98,8 @@ class TestArgumentParsing:
             '--path', '/test/path',
             '--exclude', 'repo1',
             '--dry-run',
-            '--disable-root'
+            '--disable-root',
+            '--clone-method', 'ssh'
         ]
         
         with patch('sys.argv', ['gitlab-cloner.py'] + args):
@@ -107,6 +112,7 @@ class TestArgumentParsing:
         assert config.exclude == 'repo1'
         assert config.dry_run is True
         assert config.disable_root is True
+        assert config.clone_method == gc.CloneMethod.SSH
     
     @patch.dict(os.environ, {'GITLAB_TOKEN': 'env-token'})
     def test_token_from_environment(self):

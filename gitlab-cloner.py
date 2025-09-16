@@ -20,6 +20,7 @@ import shutil
 import subprocess
 import sys
 from dataclasses import dataclass
+from enum import Enum
 from typing import List, NoReturn, Optional
 
 import colorama
@@ -40,8 +41,15 @@ EXIT_GITLAB_ERROR = 30
 EXIT_AUTH_ERROR = 40
 
 
+class CloneMethod(Enum):
+    """Enumeration for git clone methods."""
+
+    HTTPS = "https"
+    SSH = "ssh"
+
+
 @dataclass
-class Config:
+class Config:  # pylint: disable=too-many-instance-attributes
     """Configuration for GitLab cloner."""
 
     url: str
@@ -51,6 +59,7 @@ class Config:
     disable_root: bool
     dry_run: bool
     exclude: Optional[str]
+    clone_method: CloneMethod = CloneMethod.HTTPS
 
 
 class GitOperations:
@@ -319,7 +328,10 @@ class GitLabCloner:
         Logger.info(f"processing: {project_path}")
 
         # Get project paths
-        remote_url = getattr(project, "ssh_url_to_repo", "")
+        if self.config.clone_method == CloneMethod.SSH:
+            remote_url = getattr(project, "ssh_url_to_repo", "")
+        else:
+            remote_url = getattr(project, "http_url_to_repo", "")
         local_path = PathManager.calculate_local_path(
             project_path,
             self.config.path,
@@ -406,6 +418,14 @@ Examples:
         help="Pattern to exclude from subgroups and projects",
     )
 
+    parser.add_argument(
+        "--clone-method",
+        dest="clone_method",
+        choices=[method.value for method in CloneMethod],
+        default=CloneMethod.HTTPS.value,
+        help="Clone method: https or ssh (default: https)",
+    )
+
     args = parser.parse_args()
 
     # Handle token
@@ -431,6 +451,7 @@ Examples:
         disable_root=args.disable_root,
         dry_run=args.dry_run,
         exclude=args.exclude,
+        clone_method=CloneMethod(args.clone_method),
     )
 
 

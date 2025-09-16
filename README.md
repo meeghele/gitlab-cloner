@@ -61,6 +61,7 @@ Set your GitLab token using one of these methods:
 | | `--disable-root` | Do not create root namespace folder in path |
 | `-d` | `--dry-run` | List repositories without clone/fetch |
 | `-e` | `--exclude` | Pattern to exclude from subgroups and projects |
+| | `--clone-method` | Clone method: `https` or `ssh` (default: `https`) |
 | `-h` | `--help` | Show help message and exit |
 
 ## Examples
@@ -93,6 +94,11 @@ python gitlab-cloner.py -n mygroup -u https://gitlab.company.com
 **Disable root folder creation:**
 ```bash
 python gitlab-cloner.py -n mygroup --disable-root
+```
+
+**Use SSH for cloning:**
+```bash
+python gitlab-cloner.py -n mygroup --clone-method ssh
 ```
 
 ## Exit Codes
