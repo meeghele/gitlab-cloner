@@ -19,37 +19,41 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    container: python:3.11-slim
     steps:
     - uses: actions/checkout@v4
+
+    - name: install git
+      run: |
+        apt-get update && apt-get install -y git
     
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-    
-    - name: Cache pip dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-    
-    - name: Install dependencies
-      run: make install-dev
-    
-    - name: Run linting
-      run: make lint
-    
-    - name: Run type checking
-      run: make type-check
-    
-    - name: Run basic tests
-      run: make test
-    
-    - name: Run unit tests
-      run: make test-unit
-    
-    - name: Validate script
-      run: make validate
+    - name: install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+
+    - name: run linting
+      run: |
+        echo "Running flake8..."
+        flake8 gitlab-cloner.py
+        echo "Running pylint..."
+        pylint gitlab-cloner.py
+
+    - name: run type checking
+      run: |
+        echo "Running mypy type checking..."
+        python3 -m mypy gitlab-cloner.py
+
+    - name: run basic tests
+      run: |
+        echo "Testing script execution..."
+        python3 gitlab-cloner.py --help > /dev/null && echo "Script executes successfully"
+
+    - name: run unit tests
+      run: |
+        echo "Running unit tests..."
+        python3 -m pytest tests/ -v && echo "All unit tests passed!"
+
+    - name: validate script
+      run: python3 gitlab-cloner.py --help
 
